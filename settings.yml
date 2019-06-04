@@ -1,8 +1,0 @@
-database:
-  user:     "_env:PGUSER:tzpmyvbowawcob"
-  password: "_env:PGPASS:c1f8f4adaa9e4358a20a21ff0e5723d9662fd7a5292afdc3b180afe3171f59fc"
-  host:     "_env:PGHOST:ec2-23-21-192-179.compute-1.amazonaws.com"
-  port:     "_env:PGPORT:5432"
-  # See config/test-settings.yml for an override during tests
-  database: "_env:PGDATABASE:dc3i73tektqcmh"
-  poolsize: "_env:PGPOOLSIZE:10"

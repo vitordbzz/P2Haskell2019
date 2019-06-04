@@ -1,7 +1,0 @@
-import Handler.Common
-import Handler.Home
-import Handler.Profissao
-import Handler.Funcionario
-import Handler.Treinamento
-import Handler.Usuario
-import Handler.Login

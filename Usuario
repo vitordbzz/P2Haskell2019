@@ -1,0 +1,19 @@
+formUsuario :: Form (Usuario, Text)
+formUsuario = renderBootstrap $ (,)
+    <$> (Usuario 
+        <$> areq emailField "E-mail:" Nothing
+        <*> areq passwordField "Senha: " Nothing)
+    <*> areq passwordField "Confirmacao: " Nothing 
+    
+getUsuarioR :: Handler Html
+getUsuarioR = do 
+    (widget,enctype) <- generateFormPost formUsuario
+    msg <- getMessage
+    defaultLayout $ do
+        [whamlet|
+            $maybe mensagem <- msg
+                ^{mensagem}
+            <form action=@{UsuarioR} method=post>
+                ^{widget}
+                <input type="submit" value="cadastrar">
+        |]

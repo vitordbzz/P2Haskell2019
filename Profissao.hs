@@ -1,24 +1,28 @@
-formProfissao :: Maybe Profissao -> Form Profissao
-formProfissao mProfissao = renderBootstrap $ Profissao 
-    <$> areq textField "Nome da Profissao: " (fmap profissaoNome mProfissao)
-    <*> areq textField "Sigla: " (fmap profissaoSigla mProfissao)
-
--- ^ coloca outro html, no caso, os inputs
-getProfissaoR :: Handler Html
-getProfissaoR = do 
-    (widget,enctype) <- generateFormPost (formProfissao Nothing)
+getListProfissaoR :: Handler Html
+getListProfissaoR = do 
+    profissoes <- runDB $ selectList [] [Asc ProfissaoNome]
+    defaultLayout $(whamletFile "templates/profissao.hamlet")
+    
+getPerfilProfissaoR :: ProfissaoId -> Handler Html
+getPerfilProfissaoR profid = do 
+    profissao <- runDB $ get404 profid
     defaultLayout $ do
-        [whamlet|
-            <form action=@{ProfissaoR} method=post>
-                ^{widget}
-                <input type="submit" value="cadastrar profissao">
+        addStylesheet $ StaticR css_bootstrap_css
+        toWidget [lucius|
+            body {
+                padding-top: 60px;
+                padding-bottom: 40px;
+            }
         |]
--- faz o post dos dados prof
-postProfissaoR :: Handler Html
-postProfissaoR = do
-    ((res,_),_) <- runFormPost (formProfissao Nothing)
-    case res of
-        FormSuccess profissao -> do
-            runDB $ insert profissao
-            redirect ProfissaoR
-        _ -> redirect HomeR
+        [whamlet|
+            <div>
+                Profissao: #{profissaoNome profissao}
+            <div>
+                Sigla: #{profissaoSigla profissao}
+        |]
+
+postApagarProfissaoR :: ProfissaoId -> Handler Html
+postApagarProfissaoR profid = do
+    runDB $ get404 profid
+    runDB $ delete profid
+    redirect ListProfissaoR

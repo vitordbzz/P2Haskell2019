@@ -1,19 +1,11 @@
-/static StaticR Static appStatic
+/treinamento                        TreinamentoR        GET POST
+/treinamento/perfil/#TreinamentoId  PerfilTreinamentoR  GET
+/treinamento/listar                 ListTreinamentoR    GET
+/treinamento/apagar/#TreinamentoId  ApagarTreinamentoR  POST
+/treinamento/alterar/#TreinamentoId AlterarTreinamentoR GET POST
 
-/favicon.ico FaviconR GET
-/robots.txt RobotsR GET
-
-/ HomeR GET
-/page1  Page1R GET
-/page2  Page2R GET
-/page3  Page3R GET
-
-/login LoginR GET POST
-/logout LogoutR POST
-
-/admin AdminR GET
-
-/usuario  UsuarioR     GET POST
-
-/funcionario/#TreinamentoId/profissao    FuncionarioR              GET POST
-/funcionario/listar                      ListFuncionarioR          GET
+/profissao                      ProfissaoR        GET POST
+/profissao/perfil/#ProfissaoId  PerfilProfissaoR  GET
+/profissao/listar               ListProfissaoR    GET
+/profissao/apagar/#ProfissaoId  ApagarProfissaoR  POST
+/profissao/alterar/#ProfissaoId AlterarProfissaoR GET POST

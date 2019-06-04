@@ -1,0 +1,26 @@
+ormTreinamento :: Maybe Treinamento -> Form Treinamento
+formTreinamento mTreinamento = renderBootstrap $ Treinamento
+    <$> areq textField "Nome do Treinamento: " (fmap treinamentoNome mTreinamento)
+    <*> areq textField "Sigla: " (fmap treinamentoSigla mTreinamento)
+    <*> areq intField  "Carga Horaria: " Nothing
+
+-- ^ coloca outro html, no caso, os inputs
+getTreinamentoR :: Handler Html
+getTreinamentoR = do 
+    (widget,enctype) <- generateFormPost (formTreinamento Nothing)
+    defaultLayout $ do
+        [whamlet|
+            <form action=@{TreinamentoR} method=post>
+                ^{widget}
+                <input type="submit" value="cadastrar treinamento">
+        |]
+
+postTreinamentoR :: Handler Html
+postTreinamentoR = do
+    -- LE DO FORM
+    ((res,_),_) <- runFormPost (formTreinamento Nothing)
+    case res of
+        FormSuccess treinamento -> do
+            runDB $ insert treinamento
+            redirect TreinamentoR
+        _ -> redirect HomeR

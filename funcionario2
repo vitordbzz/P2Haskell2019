@@ -1,0 +1,21 @@
+getAlterarFuncionarioR :: FuncionarioId -> Handler Html
+getAlterarFuncionarioR funcid = do
+    funcionario <- runDB $ get404 funcid
+    (widget,enctype) <- generateFormPost (formFuncionario $ Just funcionario)
+    defaultLayout $ do
+        [whamlet|
+            <form action=@{AlterarFuncionarioR funcid} method=post>
+                ^{widget}
+                <input type="submit" value="atualizar dados">
+        |]
+
+postAlterarFuncionarioR :: FuncionarioId -> Handler Html
+postAlterarFuncionarioR funcid = do
+    funcionario <- runDB $ get404 funcid
+    -- LE DO FORM
+    ((res,_),_) <- runFormPost (formFuncionario $ Just funcionario) 
+    case res of
+        FormSuccess funcionarioNovo -> do
+            runDB $ replace funcid funcionarioNovo
+            redirect ListFuncionarioR
+        _ -> redirect HomeR

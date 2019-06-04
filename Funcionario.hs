@@ -1,14 +1,28 @@
-formFuncionario :: TreinamentoId -> Form Funcionario
-formFuncionario treid = renderBootstrap $ Funcionario 
-    <$> areq textField "Nome do Funcionario: " Nothing
-    <*> areq (selectField listTreinamento) "Treinamento" Nothing
-    <*> areq (selectField listProfissao) "Profissao" Nothing
-    <*> areq dayField "Data de Nascimento: " Nothing
+getFuncionarioR :: TreinamentoId -> Handler Html
+getFuncionarioR treid = do
+    runDB $ get404 treid
+    msg <- getMessage
+    (widget,enctype) <- generateFormPost (formFuncionario treid)
+    defaultLayout $ do
+        addStylesheet $ StaticR css_bootstrap_css
+        [whamlet|
+            $maybe mensagem <- msg
+                ^{mensagem}
+            <form action=@{FuncionarioR treid} method=post enctype=#{enctype}>
+                ^{widget}
+                <input type="submit" value="Cadastrar">
+        |]
+
+postFuncionarioR :: TreinamentoId -> Handler Html
+postFuncionarioR treid = do 
+    ((res,_),_) <- runFormPost (formFuncionario treid)
+    case res of 
+        FormSuccess funcionario -> do 
+            _ <- runDB $ insert funcionario
+            setMessage [shamlet|
+                <h2>
+                    Funcionario CADASTRADO COM SUCESSO!
+            |]
+            redirect TreinamentoR
+        _ -> redirect HomeR
     
-listTreinamento = do
-       entidades1 <- runDB $ selectList [] [Asc TreinamentoNome] 
-       optionsPairs $ fmap (\ent -> (treinamentoNome $ entityVal ent, entityKey ent)) entidades1
-       
-listProfissao = do
-       entidades2 <- runDB $ selectList [] [Asc ProfissaoNome]
-       optionsPairs $ fmap (\ent -> (profissaoNome $ entityVal ent, entityKey ent)) entidades2

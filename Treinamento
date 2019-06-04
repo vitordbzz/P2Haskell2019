@@ -1,26 +1,30 @@
-ormTreinamento :: Maybe Treinamento -> Form Treinamento
-formTreinamento mTreinamento = renderBootstrap $ Treinamento
-    <$> areq textField "Nome do Treinamento: " (fmap treinamentoNome mTreinamento)
-    <*> areq textField "Sigla: " (fmap treinamentoSigla mTreinamento)
-    <*> areq intField  "Carga Horaria: " Nothing
+getListTreinamentoR :: Handler Html
+getListTreinamentoR = do 
+    treinamentos <- runDB $ selectList [] [Asc TreinamentoNome]
+    defaultLayout $(whamletFile "templates/treinamento.hamlet")
 
--- ^ coloca outro html, no caso, os inputs
-getTreinamentoR :: Handler Html
-getTreinamentoR = do 
-    (widget,enctype) <- generateFormPost (formTreinamento Nothing)
+getPerfilTreinamentoR :: TreinamentoId -> Handler Html
+getPerfilTreinamentoR treid = do 
+    treinamento <- runDB $ get404 treid
     defaultLayout $ do
+        addStylesheet $ StaticR css_bootstrap_css
+        toWidget [lucius|
+            body {
+                padding-top: 60px;
+                padding-bottom: 40px;
+            }
+        |]
         [whamlet|
-            <form action=@{TreinamentoR} method=post>
-                ^{widget}
-                <input type="submit" value="cadastrar treinamento">
+            <div>
+                Nome do Treinamento: #{treinamentoNome treinamento}
+            <div>
+                Sigla: #{treinamentoSigla treinamento}
+            <div>
+                Carga Horaria: 
         |]
 
-postTreinamentoR :: Handler Html
-postTreinamentoR = do
-    -- LE DO FORM
-    ((res,_),_) <- runFormPost (formTreinamento Nothing)
-    case res of
-        FormSuccess treinamento -> do
-            runDB $ insert treinamento
-            redirect TreinamentoR
-        _ -> redirect HomeR
+postApagarTreinamentoR :: TreinamentoId -> Handler Html
+postApagarTreinamentoR treid = do
+    runDB $ get404 treid
+    runDB $ delete treid
+    redirect ListTreinamentoR

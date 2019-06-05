@@ -1,0 +1,63 @@
+getHomeR :: Handler Html
+getHomeR = do
+    sess <- lookupSession "_ID"
+    defaultLayout $ do
+        -- pasta: static/css/bootstrap.css
+        -- / e . sao trocados por _
+        addStylesheet $ StaticR css_bootstrap_css
+        toWidget [lucius|
+            body {
+                padding-top: 20px;
+                padding-left: 15px;
+                padding-right: 15px;
+                padding-bottom: 40px;
+            }
+            btn btn-primary{
+                font-weight:bolder;
+                padding-left: 20px;
+                
+            }
+        |]
+        [whamlet|
+        
+            <div class="container-fluid">
+
+                <h1 class>
+                    <img src="static/telainicial.png"><br>
+                    SISTREINA - Sistema de Treinamento Interno
+            
+                <hr>
+                        <a href=@{UsuarioR} class="btn btn-primary">
+                            Cadastro de Usuário
+                
+                        <a href=@{TreinamentoR} class="btn btn-primary">
+                            Cadastro de Treinamento
+                
+                        <a href=@{ProfissaoR} class="btn btn-primary">
+                            Cadastro de Profissão
+                    
+                    <br><br>
+                    
+                        <a href=@{ListTreinamentoR} class="btn btn-primary">
+                            Listar Treinamentos
+                
+                        <a href=@{ListProfissaoR} class="btn btn-primary">
+                            Listar Profissões
+                
+                    <br>
+                
+                    $maybe _ <- sess 
+                
+                        <form action=@{LogoutR} method=post>
+                            <input type="submit" class="btn btn-primary" value="Sair">
+                                
+                    $nothing
+                    
+                        <a href=@{LoginR} class="btn btn-primary">
+                                Entrar
+                    <hr>
+
+                    <footer>
+                        <p>Haskell - FATEC Rubens Lara 2019
+            
+        |]

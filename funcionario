@@ -1,0 +1,7 @@
+listTreinamento = do
+       entidades <- runDB $ selectList [] [Asc TreinamentoNome] 
+       optionsPairs $ fmap (\ent -> (treinamentoNome $ entityVal ent, entityKey ent)) entidades
+       
+listProfissao = do
+       entidades <- runDB $ selectList [] [Asc ProfissaoNome]
+       optionsPairs $ fmap (\ent -> (profissaoNome $ entityVal ent, entityKey ent)) entidades

@@ -1,0 +1,48 @@
+<table>
+    <thead>
+        <tr>
+            <th>
+                NOME
+            <th>
+                SIGLA
+                
+    <tbody>
+        $forall (Entity profid profissao) <- profissoes
+            <tr>
+                <td>
+                    #{profissaoNome profissao}
+                <td>
+                    #{profissaoSigla profissao}
+                <td>
+                    <a href=@{PerfilProfissaoR profid}>
+                        #{profissaoNome profissao}
+                <td>
+                    <a href=@{AlterarProfissaoR profid}>
+                        Editar
+                <td>
+                    <form action=@{ApagarProfissaoR profid} method=post>
+                        <input type="submit" value="X">
+<table>
+    <thead>
+        <tr>
+            <th>
+                NOME
+            <th>
+                SIGLA
+                
+    <tbody>
+        $forall (Entity treid treinamento) <- treinamentos
+            <tr>
+                <td>
+                    #{treinamentoNome treinamento}
+                <td>
+                    #{treinamentoSigla treinamento}
+                <td>
+                    <a href=@{PerfilTreinamentoR treid}>
+                        #{treinamentoNome treinamento}
+                <td>
+                    <a href=@{AlterarTreinamentoR treid}>
+                        Editar
+                <td>
+                    <form action=@{ApagarTreinamentoR treid} method=post>
+                        <input type="submit" value="X">

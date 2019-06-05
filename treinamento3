@@ -1,7 +1,7 @@
-getAlterarProfissaoR :: ProfissaoId -> Handler Html
-getAlterarProfissaoR profid = do
-    profissao <- runDB $ get404 profid
-    (widget,enctype) <- generateFormPost (formProfissao $ Just profissao)
+getAlterarTreinamentoR :: TreinamentoId -> Handler Html
+getAlterarTreinamentoR treid = do
+    treinamento <- runDB $ get404 treid
+    (widget,enctype) <- generateFormPost (formTreinamento $ Just treinamento)
     defaultLayout $ do
         addStylesheet $ StaticR css_bootstrap_css
         toWidget [lucius|
@@ -18,18 +18,18 @@ getAlterarProfissaoR profid = do
             }
         |]
         [whamlet|
-            <form action=@{AlterarProfissaoR profid} method=post>
+            <form action=@{AlterarTreinamentoR treid} method=post>
                 ^{widget}
                 <input type="submit" class="btn btn-primary" value="Atualizar dados">
         |]
 
-postAlterarProfissaoR :: ProfissaoId -> Handler Html
-postAlterarProfissaoR profid = do
-    profissao <- runDB $ get404 profid
+postAlterarTreinamentoR :: TreinamentoId -> Handler Html
+postAlterarTreinamentoR treid = do
+    treinamento <- runDB $ get404 treid
     -- LE DO FORM
-    ((res,_),_) <- runFormPost (formProfissao $ Just profissao) 
+    ((res,_),_) <- runFormPost (formTreinamento $ Just treinamento) 
     case res of
-        FormSuccess profissaoNovo -> do
-            runDB $ replace profid profissaoNovo
-            redirect ListProfissaoR
+        FormSuccess treinamentoNovo -> do
+            runDB $ replace treid treinamentoNovo
+            redirect ListTreinamentoR
         _ -> redirect HomeR

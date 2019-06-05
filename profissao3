@@ -1,0 +1,35 @@
+getAlterarProfissaoR :: ProfissaoId -> Handler Html
+getAlterarProfissaoR profid = do
+    profissao <- runDB $ get404 profid
+    (widget,enctype) <- generateFormPost (formProfissao $ Just profissao)
+    defaultLayout $ do
+        addStylesheet $ StaticR css_bootstrap_css
+        toWidget [lucius|
+            body {
+                padding-top: 20px;
+                padding-left: 15px;
+                padding-right: 15px;
+                padding-bottom: 40px;
+            }
+            btn btn-primary{
+                font-weight:bolder;
+                padding-left: 20px;
+                
+            }
+        |]
+        [whamlet|
+            <form action=@{AlterarProfissaoR profid} method=post>
+                ^{widget}
+                <input type="submit" class="btn btn-primary" value="Atualizar dados">
+        |]
+
+postAlterarProfissaoR :: ProfissaoId -> Handler Html
+postAlterarProfissaoR profid = do
+    profissao <- runDB $ get404 profid
+    -- LE DO FORM
+    ((res,_),_) <- runFormPost (formProfissao $ Just profissao) 
+    case res of
+        FormSuccess profissaoNovo -> do
+            runDB $ replace profid profissaoNovo
+            redirect ListProfissaoR
+        _ -> redirect HomeR
